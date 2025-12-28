@@ -1,20 +1,20 @@
-import Groq from "groq-sdk";
 import { NextResponse } from "next/server";
 import { supabase } from "@/utils/supabase";
 
-// Validate Groq API key at startup
-const groqApiKey = process.env.GROQ_API_KEY;
-if (!groqApiKey) {
-  console.error("GROQ_API_KEY environment variable is not set!");
-}
-
-// Initialize Groq
-const groq = new Groq({
-  apiKey: groqApiKey || "",
-});
+const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
 export async function POST(req: Request) {
   try {
+    const groqApiKey = process.env.GROQ_API_KEY;
+    
+    if (!groqApiKey) {
+      console.error("GROQ_API_KEY is not set!");
+      return NextResponse.json(
+        { error: "AI service not configured." },
+        { status: 500 }
+      );
+    }
+
     const { banReason, appealText } = await req.json();
 
     if (!banReason || !appealText) {
@@ -59,19 +59,36 @@ export async function POST(req: Request) {
       ONLY return valid JSON, nothing else.
     `;
 
-    const chatCompletion = await groq.chat.completions.create({
-      messages: [
-        {
-          role: "user",
-          content: prompt,
-        },
-      ],
-      model: "llama-3.3-70b-versatile",
-      temperature: 0.7,
-      max_tokens: 1024,
+    // Use native fetch instead of SDK for better serverless compatibility
+    const groqResponse = await fetch(GROQ_API_URL, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${groqApiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "llama-3.3-70b-versatile",
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0.7,
+        max_tokens: 1024,
+      }),
     });
 
-    const responseText = chatCompletion.choices[0]?.message?.content || "";
+    if (!groqResponse.ok) {
+      const errorData = await groqResponse.text();
+      console.error("Groq API Error:", groqResponse.status, errorData);
+      
+      if (groqResponse.status === 401) {
+        return NextResponse.json({ error: "Invalid API key." }, { status: 500 });
+      }
+      if (groqResponse.status === 429) {
+        return NextResponse.json({ error: "Rate limited. Try again soon." }, { status: 429 });
+      }
+      return NextResponse.json({ error: "AI service error." }, { status: 500 });
+    }
+
+    const groqData = await groqResponse.json();
+    const responseText = groqData.choices?.[0]?.message?.content || "";
     
     // Clean up markdown code blocks if present
     const cleanJson = responseText.replace(/```json/g, "").replace(/```/g, "").trim();
@@ -105,35 +122,7 @@ export async function POST(req: Request) {
     return NextResponse.json(judgment);
 
   } catch (error: any) {
-    console.error("=== API Error Details ===");
-    console.error("Error name:", error?.name);
-    console.error("Error message:", error?.message);
-    console.error("Error status:", error?.status);
-    console.error("Error stack:", error?.stack);
-    console.error("Full error:", JSON.stringify(error, null, 2));
-    
-    // Check for specific Groq errors
-    if (error?.status === 401 || error?.message?.includes("API key") || error?.message?.includes("Invalid")) {
-      return NextResponse.json(
-        { error: "AI configuration error: Invalid API key." },
-        { status: 500 }
-      );
-    }
-    
-    if (error?.status === 429) {
-      return NextResponse.json(
-        { error: "Rate limited. Please try again in a moment." },
-        { status: 429 }
-      );
-    }
-    
-    if (error?.name === "APIConnectionError" || error?.message?.includes("Connection")) {
-      return NextResponse.json(
-        { error: "Could not connect to AI service. Please try again." },
-        { status: 503 }
-      );
-    }
-    
+    console.error("API Error:", error?.message, error?.stack);
     return NextResponse.json(
       { error: error?.message || "Internal Server Error" },
       { status: 500 }
