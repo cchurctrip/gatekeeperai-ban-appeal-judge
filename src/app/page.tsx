@@ -2,6 +2,10 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Gavel, Copy, Download, AlertTriangle, CheckCircle, Loader2, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { toPng } from 'html-to-image';
+import clsx from 'clsx';
+import { CopiumTank } from '@/components/Icons';
 
 // X (Twitter) logo component
 function XLogo({ className }: { className?: string }) {
@@ -11,9 +15,6 @@ function XLogo({ className }: { className?: string }) {
     </svg>
   );
 }
-import { motion, AnimatePresence } from 'framer-motion';
-import { toPng } from 'html-to-image';
-import clsx from 'clsx';
 
 interface Judgment {
   verdict: "DENIED" | "GRANTED";
@@ -142,11 +143,14 @@ export default function Home() {
           </a>
         </nav>
 
-        {/* Header */}
-        <header className="text-center space-y-4">
-          <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-white">
-            THE BAN APPEAL <span className="text-red-600">JUDGE</span>
-          </h1>
+      {/* Header */}
+      <header className="text-center space-y-4">
+        <div className="flex items-center justify-center gap-4 mb-6">
+          <CopiumTank className="w-20 h-20 text-green-500 drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]" />
+        </div>
+        <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-white">
+          THE BAN APPEAL <span className="text-red-600">JUDGE</span>
+        </h1>
           <p className="text-xl text-neutral-400 max-w-2xl mx-auto">
             Admins hate reading lies. Paste the appeal below and get an instant <span className="text-white font-bold">Copium Index</span>.
           </p>
