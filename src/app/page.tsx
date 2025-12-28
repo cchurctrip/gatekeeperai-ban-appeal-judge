@@ -105,23 +105,14 @@ export default function Home() {
   const shareToX = () => {
     if (!judgment) return;
     
-    // Balanced: context + humor + result (~200-240 chars)
-    let text: string;
-    const flag = judgment.redFlag.slice(0, 35) + (judgment.redFlag.length > 35 ? '...' : '');
+    // Truncate red flag to ~60 chars max
+    const flag = judgment.redFlag.slice(0, 60) + (judgment.redFlag.length > 60 ? '...' : '');
     
+    let text: string;
     if (judgment.verdict === "DENIED") {
-      const deniedOptions = [
-        `I put a ban appeal through an AI lie detector and it scored ${judgment.copiumIndex}% copium 💨\n\n🚩 "${flag}"\n\n🚫 DENIED`,
-        `This AI judges ban appeals for BS. Verdict: ${judgment.copiumIndex}% copium 💨\n\n"${flag}"\n\n🔨 DENIED`,
-        `Found an AI that roasts ban appeals. This one hit ${judgment.copiumIndex}% on the copium meter 💀\n\n"${flag}"`,
-      ];
-      text = deniedOptions[Math.floor(Math.random() * deniedOptions.length)];
+      text = `Ran a ban appeal through an AI Judge 💨\n\n🚫 DENIED\n📊 Copium: ${judgment.copiumIndex}%\n🚩 "${flag}"\n\nFree tool that detects BS in appeals:`;
     } else {
-      const grantedOptions = [
-        `This AI judges ban appeals for BS... and it actually believed this one? Only ${judgment.copiumIndex}% copium 🦄\n\n✅ GRANTED`,
-        `An AI lie detector for ban appeals found a genuine one. ${judgment.copiumIndex}% copium. Rare. 🫡`,
-      ];
-      text = grantedOptions[Math.floor(Math.random() * grantedOptions.length)];
+      text = `Ran a ban appeal through an AI Judge 🦄\n\n✅ GRANTED\n📊 Copium: ${judgment.copiumIndex}%\n💚 "${flag}"\n\nFree tool that detects BS in appeals:`;
     }
     
     const url = "https://judge.gatekeeperai.app";
