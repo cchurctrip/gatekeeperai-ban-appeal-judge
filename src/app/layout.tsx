@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "The Ban Appeal Judge | AI-Powered Copium Index | Gatekeeper AI",
-  description: "Free AI tool for Discord & community admins. Paste a ban appeal and instantly get a Copium Index score. Detect lies, manipulation, and clichés in user appeals. Save hours of moderation time.",
+  description: "Free AI tool for Discord & community admins. Paste a ban appeal and instantly get a verdict (Ban/Unban) and Copium Index score. Detect lies, manipulation, and clichés. Save hours of moderation time.",
   keywords: [
     "ban appeal",
     "ban appeal judge", 
@@ -62,7 +62,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "The Ban Appeal Judge | AI Copium Index",
-    description: "Free AI tool for admins. Paste a ban appeal and instantly detect lies & manipulation. Get a Copium Index score in seconds.",
+    description: "Free AI tool for admins. Paste a ban appeal and instantly get a Verdict (Ban/Unban) + Copium Index. Detect lies & manipulation in seconds.",
     images: ["/og-image.png"],
     creator: "@GatekeeperAI",
   },
@@ -77,7 +77,7 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
   name: "The Ban Appeal Judge",
-  description: "AI-powered tool that analyzes ban appeals for sincerity. Get an instant Copium Index score to detect lies, emotional manipulation, and clichés in user appeals.",
+  description: "AI-powered tool that analyzes ban appeals for sincerity. Get an instant Verdict and Copium Index score to help decide whether to unban or keep banned.",
   url: "https://judge.gatekeeperai.app",
   applicationCategory: "UtilityApplication",
   operatingSystem: "Web Browser",

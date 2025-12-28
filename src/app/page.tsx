@@ -152,7 +152,7 @@ export default function Home() {
           THE BAN APPEAL <span className="text-red-600">JUDGE</span>
         </h1>
           <p className="text-xl text-neutral-400 max-w-2xl mx-auto">
-            Admins ain't reading all that. Paste the sob story below for an instant <span className="text-white font-bold">Copium Index</span>.
+            Admins ain't reading all that. Paste the sob story below for an instant <span className="text-white font-bold">Copium Index & Verdict</span>.
           </p>
         </header>
 
