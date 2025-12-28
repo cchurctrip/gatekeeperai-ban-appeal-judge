@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { Gavel, Copy, Share2, AlertTriangle, CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import { Gavel, Copy, Download, Twitter, AlertTriangle, CheckCircle, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toPng } from 'html-to-image';
 import clsx from 'clsx';
@@ -52,10 +52,33 @@ export default function Home() {
       const dataUrl = await toPng(cardRef.current, { cacheBust: true, backgroundColor: '#0a0a0a' });
       const blob = await (await fetch(dataUrl)).blob();
       await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
-      alert("Judgement Card copied to clipboard!");
+      alert("Judgement Card copied! Now paste it anywhere 📋");
     } catch (err) {
       console.error("Failed to copy image", err);
+      alert("Couldn't copy - try Download instead!");
     }
+  };
+
+  const downloadImage = async () => {
+    if (!cardRef.current) return;
+    try {
+      const dataUrl = await toPng(cardRef.current, { cacheBust: true, backgroundColor: '#0a0a0a' });
+      const link = document.createElement('a');
+      link.download = `ban-appeal-verdict-${judgment?.copiumIndex}pct-copium.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error("Failed to download image", err);
+    }
+  };
+
+  const shareToTwitter = () => {
+    if (!judgment) return;
+    const verdict = judgment.verdict === "DENIED" ? "🚫 DENIED" : "✅ GRANTED";
+    const emoji = judgment.copiumIndex > 70 ? "💨" : judgment.copiumIndex > 40 ? "🤔" : "👏";
+    const text = `${verdict} ${emoji}\n\nCopium Index: ${judgment.copiumIndex}%\nRed Flag: "${judgment.redFlag}"\n\nJudge your ban appeals with AI 👉`;
+    const url = "https://judge.gatekeeperai.app";
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
   };
 
   return (
@@ -238,13 +261,39 @@ export default function Home() {
                     </div>
                   </div>
 
+                  {/* Share Prompt */}
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.8 }}
+                    className="mt-6 p-4 bg-gradient-to-r from-red-500/10 to-orange-500/10 rounded-xl border border-red-500/20"
+                  >
+                    <p className="text-sm text-center text-neutral-300">
+                      {judgment.verdict === "DENIED" 
+                        ? "🎭 This cope is too good not to share. Expose the BS!" 
+                        : "🎉 A rare genuine appeal! Share this unicorn!"}
+                    </p>
+                  </motion.div>
+
                   {/* Actions */}
-                  <div className="flex gap-3 mt-4 justify-end">
+                  <div className="flex flex-wrap gap-3 mt-4 justify-center">
+                    <button 
+                      onClick={shareToTwitter}
+                      className="flex items-center gap-2 px-5 py-2.5 bg-black hover:bg-neutral-900 text-white rounded-full text-sm font-bold transition-all border border-neutral-700 hover:border-neutral-500"
+                    >
+                      <Twitter className="w-4 h-4" /> Share on X
+                    </button>
                     <button 
                       onClick={copyImage}
-                      className="flex items-center gap-2 px-4 py-2 bg-neutral-800 hover:bg-neutral-700 text-white rounded-lg text-sm font-medium transition-colors"
+                      className="flex items-center gap-2 px-5 py-2.5 bg-neutral-800 hover:bg-neutral-700 text-white rounded-full text-sm font-medium transition-colors"
                     >
                       <Copy className="w-4 h-4" /> Copy Image
+                    </button>
+                    <button 
+                      onClick={downloadImage}
+                      className="flex items-center gap-2 px-5 py-2.5 bg-neutral-800 hover:bg-neutral-700 text-white rounded-full text-sm font-medium transition-colors"
+                    >
+                      <Download className="w-4 h-4" /> Download
                     </button>
                   </div>
                 </motion.div>
