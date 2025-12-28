@@ -352,7 +352,7 @@ export default function Home() {
           <div className="max-w-2xl mx-auto space-y-6">
             <h2 className="text-3xl font-bold text-white">Don't waste emotional energy on excuses.</h2>
             <p className="text-neutral-400">
-              This tool filters individual appeals. <span className="text-white">Gatekeeper AI</span> filters your entire community.
+              This <span className="text-white font-medium">free tool</span> filters individual appeals. <span className="text-white font-bold">Gatekeeper AI</span> filters your entire community.
             </p>
             <a 
               href="https://gatekeeperai.app" 
