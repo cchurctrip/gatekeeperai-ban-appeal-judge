@@ -350,12 +350,14 @@ export default function Home() {
         {/* The Bridge */}
         <footer className="pt-20 pb-12 text-center border-t border-neutral-900">
           <div className="max-w-2xl mx-auto space-y-6">
-            <h2 className="text-3xl font-bold text-white">Don't waste emotional energy on liars.</h2>
+            <h2 className="text-3xl font-bold text-white">Don't waste emotional energy on excuses.</h2>
             <p className="text-neutral-400">
               This tool filters individual appeals. <span className="text-white">Gatekeeper AI</span> filters your entire community.
             </p>
             <a 
-              href="#" 
+              href="https://gatekeeperai.app" 
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-8 py-3 bg-white text-black font-bold rounded-full hover:scale-105 transition-transform"
             >
               Automate Your Defense <span aria-hidden="true">&rarr;</span>
