@@ -2,9 +2,15 @@ import Groq from "groq-sdk";
 import { NextResponse } from "next/server";
 import { supabase } from "@/utils/supabase";
 
+// Validate Groq API key at startup
+const groqApiKey = process.env.GROQ_API_KEY;
+if (!groqApiKey) {
+  console.error("GROQ_API_KEY environment variable is not set!");
+}
+
 // Initialize Groq
 const groq = new Groq({
-  apiKey: process.env.GROQ_API_KEY || "",
+  apiKey: groqApiKey || "",
 });
 
 export async function POST(req: Request) {
@@ -99,15 +105,32 @@ export async function POST(req: Request) {
     return NextResponse.json(judgment);
 
   } catch (error: any) {
-    console.error("API Error:", error);
+    console.error("=== API Error Details ===");
+    console.error("Error name:", error?.name);
     console.error("Error message:", error?.message);
+    console.error("Error status:", error?.status);
     console.error("Error stack:", error?.stack);
+    console.error("Full error:", JSON.stringify(error, null, 2));
     
     // Check for specific Groq errors
-    if (error?.message?.includes("API key")) {
+    if (error?.status === 401 || error?.message?.includes("API key") || error?.message?.includes("Invalid")) {
       return NextResponse.json(
-        { error: "AI configuration error. Please check API key." },
+        { error: "AI configuration error: Invalid API key." },
         { status: 500 }
+      );
+    }
+    
+    if (error?.status === 429) {
+      return NextResponse.json(
+        { error: "Rate limited. Please try again in a moment." },
+        { status: 429 }
+      );
+    }
+    
+    if (error?.name === "APIConnectionError" || error?.message?.includes("Connection")) {
+      return NextResponse.json(
+        { error: "Could not connect to AI service. Please try again." },
+        { status: 503 }
       );
     }
     
