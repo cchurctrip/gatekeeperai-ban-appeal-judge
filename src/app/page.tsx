@@ -62,12 +62,25 @@ export default function Home() {
     <main className="min-h-screen bg-neutral-950 py-12 px-4 md:px-8 selection:bg-red-500/30">
       <div className="max-w-5xl mx-auto space-y-12">
         
+        {/* Top Bar */}
+        <nav className="flex items-center justify-between">
+          <div className="flex items-center gap-2 p-2 px-3 bg-neutral-900 rounded-full border border-neutral-800">
+            <Gavel className="w-4 h-4 text-red-500" />
+            <span className="font-mono text-xs text-neutral-400">CASE #4: APPEAL JUDGE</span>
+          </div>
+          <a 
+            href="https://gatekeeperai.app" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 p-2 px-3 bg-neutral-900/50 hover:bg-neutral-800 rounded-full border border-neutral-800 transition-colors group"
+          >
+            <span className="text-xs text-neutral-500 group-hover:text-neutral-300">Powered by</span>
+            <span className="text-xs font-bold text-white">GatekeeperAI</span>
+          </a>
+        </nav>
+
         {/* Header */}
         <header className="text-center space-y-4">
-          <div className="inline-flex items-center justify-center p-3 bg-neutral-900 rounded-full mb-4 border border-neutral-800">
-            <Gavel className="w-6 h-6 text-red-500 mr-2" />
-            <span className="font-mono text-sm text-neutral-400">CASE #4: APPEAL JUDGE</span>
-          </div>
           <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-white">
             THE BAN APPEAL <span className="text-red-600">JUDGE</span>
           </h1>
