@@ -105,20 +105,24 @@ export default function Home() {
   const shareToX = () => {
     if (!judgment) return;
     
-    // Short, punchy, humorous share text
-    const deniedOptions = [
-      `"${judgment.redFlag.slice(0, 40)}${judgment.redFlag.length > 40 ? '...' : ''}"\n\nThe AI said no. ${judgment.copiumIndex}% copium detected 💨`,
-      `Bro really said "${judgment.redFlag.slice(0, 35)}${judgment.redFlag.length > 35 ? '...' : ''}" and expected unbanned 💀`,
-      `${judgment.copiumIndex}% copium. The AI has spoken. 🔨`,
-    ];
+    // Balanced: context + humor + result (~200-240 chars)
+    let text: string;
+    const flag = judgment.redFlag.slice(0, 35) + (judgment.redFlag.length > 35 ? '...' : '');
     
-    const grantedOptions = [
-      `Wait... the AI actually believed them?? Only ${judgment.copiumIndex}% copium 🦄`,
-      `No way. A genuine appeal exists. ${judgment.copiumIndex}% copium 🫡`,
-    ];
-    
-    const options = judgment.verdict === "DENIED" ? deniedOptions : grantedOptions;
-    const text = options[Math.floor(Math.random() * options.length)];
+    if (judgment.verdict === "DENIED") {
+      const deniedOptions = [
+        `I put a ban appeal through an AI lie detector and it scored ${judgment.copiumIndex}% copium 💨\n\n🚩 "${flag}"\n\n🚫 DENIED`,
+        `This AI judges ban appeals for BS. Verdict: ${judgment.copiumIndex}% copium 💨\n\n"${flag}"\n\n🔨 DENIED`,
+        `Found an AI that roasts ban appeals. This one hit ${judgment.copiumIndex}% on the copium meter 💀\n\n"${flag}"`,
+      ];
+      text = deniedOptions[Math.floor(Math.random() * deniedOptions.length)];
+    } else {
+      const grantedOptions = [
+        `This AI judges ban appeals for BS... and it actually believed this one? Only ${judgment.copiumIndex}% copium 🦄\n\n✅ GRANTED`,
+        `An AI lie detector for ban appeals found a genuine one. ${judgment.copiumIndex}% copium. Rare. 🫡`,
+      ];
+      text = grantedOptions[Math.floor(Math.random() * grantedOptions.length)];
+    }
     
     const url = "https://judge.gatekeeperai.app";
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
