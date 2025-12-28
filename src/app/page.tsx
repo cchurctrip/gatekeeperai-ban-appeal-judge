@@ -105,14 +105,16 @@ export default function Home() {
   const shareToX = () => {
     if (!judgment) return;
     
-    // Truncate red flag to ~60 chars max
-    const flag = judgment.redFlag.slice(0, 60) + (judgment.redFlag.length > 60 ? '...' : '');
+    // X limit: 280 chars. URLs become 23 chars via t.co. So ~255 chars for text.
+    // Truncate red flag dynamically to fit
+    const maxFlagLength = 90;
+    const flag = judgment.redFlag.slice(0, maxFlagLength) + (judgment.redFlag.length > maxFlagLength ? '...' : '');
     
     let text: string;
     if (judgment.verdict === "DENIED") {
-      text = `Ran a ban appeal through an AI Judge 💨\n\n🚫 DENIED\n📊 Copium: ${judgment.copiumIndex}%\n🚩 "${flag}"\n\nFree tool that detects BS in appeals:`;
+      text = `Ran a ban appeal through an AI Judge and the cope is unreal 💨\n\n🚫 DENIED\n📊 Copium Index: ${judgment.copiumIndex}%\n🚩 "${flag}"\n\nFree tool that detects BS in ban appeals:`;
     } else {
-      text = `Ran a ban appeal through an AI Judge 🦄\n\n✅ GRANTED\n📊 Copium: ${judgment.copiumIndex}%\n💚 "${flag}"\n\nFree tool that detects BS in appeals:`;
+      text = `Ran a ban appeal through an AI Judge... and it's actually legit?? 🦄\n\n✅ GRANTED\n📊 Copium Index: ${judgment.copiumIndex}%\n💚 "${flag}"\n\nFree tool that detects BS in ban appeals:`;
     }
     
     const url = "https://judge.gatekeeperai.app";
