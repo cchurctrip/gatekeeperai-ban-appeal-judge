@@ -105,13 +105,20 @@ export default function Home() {
   const shareToX = () => {
     if (!judgment) return;
     
-    // Short, punchy share text under 200 chars (leave room for URL)
-    let text: string;
-    if (judgment.verdict === "DENIED") {
-      text = `🚫 DENIED – ${judgment.copiumIndex}% Copium\n\n"${judgment.redFlag.slice(0, 50)}${judgment.redFlag.length > 50 ? '...' : ''}"\n\nAI Ban Appeal Judge:`;
-    } else {
-      text = `✅ GRANTED – Only ${judgment.copiumIndex}% Copium\n\nRare genuine appeal detected 🦄\n\nAI Ban Appeal Judge:`;
-    }
+    // Short, punchy, humorous share text
+    const deniedOptions = [
+      `"${judgment.redFlag.slice(0, 40)}${judgment.redFlag.length > 40 ? '...' : ''}"\n\nThe AI said no. ${judgment.copiumIndex}% copium detected 💨`,
+      `Bro really said "${judgment.redFlag.slice(0, 35)}${judgment.redFlag.length > 35 ? '...' : ''}" and expected unbanned 💀`,
+      `${judgment.copiumIndex}% copium. The AI has spoken. 🔨`,
+    ];
+    
+    const grantedOptions = [
+      `Wait... the AI actually believed them?? Only ${judgment.copiumIndex}% copium 🦄`,
+      `No way. A genuine appeal exists. ${judgment.copiumIndex}% copium 🫡`,
+    ];
+    
+    const options = judgment.verdict === "DENIED" ? deniedOptions : grantedOptions;
+    const text = options[Math.floor(Math.random() * options.length)];
     
     const url = "https://judge.gatekeeperai.app";
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
