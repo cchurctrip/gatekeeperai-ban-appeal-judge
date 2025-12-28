@@ -211,12 +211,15 @@ export default function Home() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="text-center text-neutral-600 space-y-4"
+                  className="text-center space-y-4"
                 >
-                  <div className="w-24 h-24 bg-neutral-900 rounded-full flex items-center justify-center mx-auto border border-neutral-800">
-                    <ScaleIcon className="w-10 h-10 opacity-20" />
+                  <div className="w-32 h-32 bg-neutral-900 rounded-full flex items-center justify-center mx-auto border border-neutral-700 shadow-[0_0_30px_rgba(220,38,38,0.1)] animate-[pulse_3s_ease-in-out_infinite]">
+                    <ScaleIcon className="w-12 h-12 text-neutral-400" />
                   </div>
-                  <p>The court is waiting for your input.</p>
+                  <div className="space-y-1">
+                    <p className="text-neutral-300 font-medium text-lg">The court is waiting.</p>
+                    <p className="text-neutral-500 text-sm">Enter the evidence above.</p>
+                  </div>
                 </motion.div>
               ) : (
                 <motion.div
