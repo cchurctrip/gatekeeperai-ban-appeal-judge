@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useRef } from 'react';
-import { Gavel, Copy, Download, Twitter, AlertTriangle, CheckCircle, Loader2 } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { Gavel, Copy, Download, Twitter, AlertTriangle, CheckCircle, Loader2, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toPng } from 'html-to-image';
 import clsx from 'clsx';
@@ -14,12 +14,31 @@ interface Judgment {
   styles: string[];
 }
 
+interface Toast {
+  id: string;
+  type: 'success' | 'error' | 'info';
+  message: string;
+}
+
 export default function Home() {
   const [loading, setLoading] = useState(false);
   const [banReason, setBanReason] = useState("");
   const [appealText, setAppealText] = useState("");
   const [judgment, setJudgment] = useState<Judgment | null>(null);
+  const [toasts, setToasts] = useState<Toast[]>([]);
   const cardRef = useRef<HTMLDivElement>(null);
+
+  const showToast = (type: Toast['type'], message: string) => {
+    const id = Math.random().toString(36).slice(2);
+    setToasts(prev => [...prev, { id, type, message }]);
+    setTimeout(() => {
+      setToasts(prev => prev.filter(t => t.id !== id));
+    }, 5000);
+  };
+
+  const dismissToast = (id: string) => {
+    setToasts(prev => prev.filter(t => t.id !== id));
+  };
 
   const handleJudge = async () => {
     if (!banReason || !appealText) return;
@@ -38,8 +57,8 @@ export default function Home() {
       if (data.error) throw new Error(data.error);
       
       setJudgment(data);
-    } catch (error) {
-      alert("Court is recessed. Error contacting the judge.");
+    } catch (error: any) {
+      showToast('error', `⚖️ Court is recessed: ${error?.message || 'Error contacting the judge'}`);
       console.error(error);
     } finally {
       setLoading(false);
@@ -52,10 +71,10 @@ export default function Home() {
       const dataUrl = await toPng(cardRef.current, { cacheBust: true, backgroundColor: '#0a0a0a' });
       const blob = await (await fetch(dataUrl)).blob();
       await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
-      alert("Judgement Card copied! Now paste it anywhere 📋");
+      showToast('success', '📋 Judgement Card copied! Paste it anywhere.');
     } catch (err) {
       console.error("Failed to copy image", err);
-      alert("Couldn't copy - try Download instead!");
+      showToast('error', "Couldn't copy – try Download instead!");
     }
   };
 
@@ -67,8 +86,10 @@ export default function Home() {
       link.download = `ban-appeal-verdict-${judgment?.copiumIndex}pct-copium.png`;
       link.href = dataUrl;
       link.click();
+      showToast('success', '📥 Image downloaded!');
     } catch (err) {
       console.error("Failed to download image", err);
+      showToast('error', "Download failed. Try again.");
     }
   };
 
@@ -329,6 +350,34 @@ export default function Home() {
           </div>
         </footer>
 
+      </div>
+
+      {/* Toast Notifications */}
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3 max-w-md">
+        <AnimatePresence>
+          {toasts.map((toast) => (
+            <motion.div
+              key={toast.id}
+              initial={{ opacity: 0, y: 20, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 10, scale: 0.95 }}
+              className={clsx(
+                "flex items-start gap-3 p-4 rounded-xl shadow-2xl border backdrop-blur-sm",
+                toast.type === 'error' && "bg-red-950/90 border-red-500/50 text-red-100",
+                toast.type === 'success' && "bg-green-950/90 border-green-500/50 text-green-100",
+                toast.type === 'info' && "bg-neutral-900/90 border-neutral-700 text-neutral-100"
+              )}
+            >
+              <div className="flex-1 text-sm font-medium">{toast.message}</div>
+              <button 
+                onClick={() => dismissToast(toast.id)}
+                className="text-current opacity-60 hover:opacity-100 transition-opacity"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
     </main>
   );

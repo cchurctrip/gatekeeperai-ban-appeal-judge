@@ -98,10 +98,21 @@ export async function POST(req: Request) {
 
     return NextResponse.json(judgment);
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("API Error:", error);
+    console.error("Error message:", error?.message);
+    console.error("Error stack:", error?.stack);
+    
+    // Check for specific Groq errors
+    if (error?.message?.includes("API key")) {
+      return NextResponse.json(
+        { error: "AI configuration error. Please check API key." },
+        { status: 500 }
+      );
+    }
+    
     return NextResponse.json(
-      { error: "Internal Server Error" },
+      { error: error?.message || "Internal Server Error" },
       { status: 500 }
     );
   }
