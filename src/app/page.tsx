@@ -105,16 +105,12 @@ export default function Home() {
   const shareToX = () => {
     if (!judgment) return;
     
-    // Create contextual share text based on verdict
+    // Short, punchy share text under 200 chars (leave room for URL)
     let text: string;
     if (judgment.verdict === "DENIED") {
-      if (judgment.copiumIndex >= 80) {
-        text = `Just ran a ban appeal through an AI Judge and the cope levels are OFF THE CHARTS 💨\n\n🚫 DENIED\n📊 Copium Index: ${judgment.copiumIndex}%\n🚩 "${judgment.redFlag}"\n\nThis free tool detects BS in ban appeals instantly:`;
-      } else {
-        text = `AI analyzed this ban appeal and called BS 🔨\n\n🚫 DENIED (${judgment.copiumIndex}% Copium)\n🚩 Red Flag: "${judgment.redFlag}"\n\nFree tool for mods to detect excuses & manipulation:`;
-      }
+      text = `🚫 DENIED – ${judgment.copiumIndex}% Copium\n\n"${judgment.redFlag.slice(0, 50)}${judgment.redFlag.length > 50 ? '...' : ''}"\n\nAI Ban Appeal Judge:`;
     } else {
-      text = `Rare W! AI Judge actually approved this ban appeal 🦄\n\n✅ GRANTED\n📊 Copium Index: Only ${judgment.copiumIndex}%\n💚 "${judgment.redFlag}"\n\nFree tool that detects genuine vs fake appeals:`;
+      text = `✅ GRANTED – Only ${judgment.copiumIndex}% Copium\n\nRare genuine appeal detected 🦄\n\nAI Ban Appeal Judge:`;
     }
     
     const url = "https://judge.gatekeeperai.app";
